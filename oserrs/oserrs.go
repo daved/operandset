@@ -14,7 +14,7 @@ func NewParseError(child error) *ParseError {
 }
 
 func (e *ParseError) Error() string {
-	return fmt.Sprintf("convert raw string: %v", e.child)
+	return fmt.Sprintf("parse: %v", e.child)
 }
 
 func (e *ParseError) Unwrap() error {
