@@ -9,27 +9,6 @@ import (
 	"github.com/daved/operandset/vtypes"
 )
 
-type Operand struct {
-	val  any
-	req  bool
-	name string
-	desc string
-	Tag  string
-	Meta map[string]any
-}
-
-func (o *Operand) Name() string {
-	return o.name
-}
-
-func (o *Operand) Required() bool {
-	return o.req
-}
-
-func (o *Operand) Description() string {
-	return o.desc
-}
-
 type OperandSet struct {
 	name    string
 	ops     []*Operand
@@ -55,19 +34,7 @@ func (os *OperandSet) Operands() []*Operand {
 }
 
 func (os *OperandSet) Operand(val any, req bool, name, desc string) *Operand {
-	lEnc, rEnc := "[", "]" // enclosures
-	if req {
-		lEnc, rEnc = "<", ">"
-	}
-
-	o := &Operand{
-		val:  val,
-		req:  req,
-		name: name,
-		desc: desc,
-		Tag:  lEnc + name + rEnc,
-		Meta: map[string]any{},
-	}
+	o := newOperand(val, req, name, desc)
 
 	os.ops = append(os.ops, o)
 

@@ -17,18 +17,6 @@ type TmplConfig struct {
 }
 
 func NewDefaultTmplConfig() *TmplConfig {
-	tagHintFn := func(o *Operand) string {
-		if o.Tag == "" {
-			return ""
-		}
-
-		pre, post := "[", "]"
-		if o.req {
-			pre, post = "<", ">"
-		}
-
-		return pre + o.Tag + post
-	}
 	nameHintFn := func(o *Operand) string {
 		if o.name == "" {
 			return ""
@@ -44,7 +32,6 @@ func NewDefaultTmplConfig() *TmplConfig {
 
 	tmplFMap := template.FuncMap{
 		"Join":     strings.Join,
-		"TagHint":  tagHintFn,
 		"NameHint": nameHintFn,
 	}
 
