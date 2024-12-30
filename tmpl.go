@@ -31,7 +31,6 @@ func NewDefaultTmplConfig() *TmplConfig {
 	}
 
 	tmplFMap := template.FuncMap{
-		"Join":     strings.Join,
 		"NameHint": nameHintFn,
 	}
 
