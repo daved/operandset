@@ -1,3 +1,8 @@
+// Package operandset is similar to the standard library flag package. Instead
+// of flags, operands are the focus. Operands are the non-flag, non-subcommand
+// args in a CLI command that are typically at the end of the arg list. Operands
+// are normally treated as the important values used by the behavior being
+// executed by the particular CLI command.
 package operandset
 
 import (
@@ -9,6 +14,8 @@ import (
 	"github.com/daved/operandset/vtype"
 )
 
+// OperandSet contains operand options and related information used for usage
+// output. The exported fields are for easy post-construction configuraiton.
 type OperandSet struct {
 	name    string
 	ops     []*Operand
@@ -17,6 +24,8 @@ type OperandSet struct {
 	Meta    map[string]any
 }
 
+// New constructs an OperandSet. In this package, it is conventional to name the
+// operandset after the command that the options are being associated with.
 func New(name string) *OperandSet {
 	return &OperandSet{
 		name:    name,
@@ -25,14 +34,21 @@ func New(name string) *OperandSet {
 	}
 }
 
+// Name returns the name set during construction.
 func (os *OperandSet) Name() string {
 	return os.name
 }
 
+// Operands returns all operand options that have been set.
 func (os *OperandSet) Operands() []*Operand {
 	return os.ops
 }
 
+// Operand adds an operand option to the OperandSet.
+// Valid values are:
+//   - builtin: *string, *bool, *int, *int64, *uint, *uint64, *float64
+//   - stdlib: *[time.Duration], [flag.Value]
+//   - vtype: [vtype.TextMarshalUnmarshaler], [vtype.OperandFunc]
 func (os *OperandSet) Operand(val any, req bool, name, desc string) *Operand {
 	o := newOperand(val, req, name, desc)
 
@@ -41,6 +57,10 @@ func (os *OperandSet) Operand(val any, req bool, name, desc string) *Operand {
 	return o
 }
 
+// Parse parses operand definitions from the argument list, which must not
+// include the initial command name. Parse must be called after all operands in
+// the OperandSet are defined and before operand values are accessed by the
+// program.
 func (os *OperandSet) Parse(args []string) error {
 	os.raws = args
 
@@ -138,14 +158,21 @@ func parse(ops []*Operand, args []string) error {
 	return nil
 }
 
+// Parsed returns the args provided when Parse was called. The returned value
+// can be helpful for debugging.
 func (os *OperandSet) Parsed() []string {
 	return os.raws
 }
 
+// SetUsageTemplating allows callers to override the base template text, and
+// provide a custom FuncMap. If a nil FuncMap is provided, no change will be
+// made to the existing value.
 func (os *OperandSet) SetUsageTemplating(tmplCfg *TmplConfig) {
 	os.tmplCfg = tmplCfg
 }
 
+// Usage returns the executed usage template. Each Operand type's Meta field can
+// be leveraged to convey detailed info/behavior in a custom template.
 func (os *OperandSet) Usage() string {
 	return executeTmpl(os.tmplCfg, &TmplData{OperandSet: os})
 }

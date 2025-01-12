@@ -1,5 +1,7 @@
 package operandset
 
+// Operand manages operand option data. The exported fields are for easy
+// post-construction configuration.
 type Operand struct {
 	val  any
 	name string
@@ -18,14 +20,17 @@ func newOperand(val any, req bool, name, desc string) *Operand {
 	}
 }
 
+// Name returns the name.
 func (o *Operand) Name() string {
 	return o.name
 }
 
-func (o *Operand) Required() bool {
+// IsRequired returns whether the operand is required.
+func (o *Operand) IsRequired() bool {
 	return o.req
 }
 
+// Description returns the description string.
 func (o *Operand) Description() string {
 	return o.desc
 }
