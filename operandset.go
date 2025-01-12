@@ -6,7 +6,7 @@ import (
 	"time"
 
 	er "github.com/daved/operandset/oserrs"
-	"github.com/daved/operandset/vtypes"
+	"github.com/daved/operandset/vtype"
 )
 
 type OperandSet struct {
@@ -118,7 +118,7 @@ func parse(ops []*Operand, args []string) error {
 			}
 			*v = d
 
-		case vtypes.TextMarshalUnmarshaler:
+		case vtype.TextMarshalUnmarshaler:
 			if err := v.UnmarshalText([]byte(raw)); err != nil {
 				return newError(er.NewConvertRawError(err))
 			}
@@ -128,7 +128,7 @@ func parse(ops []*Operand, args []string) error {
 				return newError(er.NewConvertRawError(err))
 			}
 
-		case vtypes.OperandFunc:
+		case vtype.OperandFunc:
 			if err := v(raw); err != nil {
 				return newError(er.NewConvertRawError(err))
 			}
