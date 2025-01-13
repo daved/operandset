@@ -164,9 +164,9 @@ func (os *OperandSet) Parsed() []string {
 	return os.raws
 }
 
-// SetUsageTemplating allows callers to override the base template text, and
-// provide a custom FuncMap. If a nil FuncMap is provided, no change will be
-// made to the existing value.
+// SetUsageTemplating is used to override the base template text, and provide a
+// custom FuncMap. If a nil FuncMap is provided, no change will be made to the
+// existing value.
 func (os *OperandSet) SetUsageTemplating(tmplCfg *TmplConfig) {
 	os.tmplCfg = tmplCfg
 }
