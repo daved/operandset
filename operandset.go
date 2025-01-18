@@ -1,8 +1,10 @@
 // Package operandset is similar to the standard library flag package. Instead
-// of flags, operands are the focus. Operands are the non-flag, non-subcommand
-// args in a CLI command that are typically at the end of the arg list. Operands
-// are normally treated as the important values used by the behavior being
-// executed by the particular CLI command.
+// of flags, operands are the focus.
+//
+// Operands are the non-flag, non-subcommand
+// args in a CLI command that are at the end of the arg set. Operands are
+// normally treated as the important values used by the behavior being executed
+// with the particular CLI command.
 package operandset
 
 import (
@@ -50,6 +52,10 @@ func (os *OperandSet) Operands() []*Operand {
 //   - stdlib: *[time.Duration], [flag.Value]
 //   - vtype: [vtype.TextMarshalUnmarshaler], [vtype.OperandFunc]
 func (os *OperandSet) Operand(val any, req bool, name, desc string) *Operand {
+	if v, ok := val.(func(string) error); ok {
+		val = vtype.OperandFunc(v)
+	}
+
 	o := newOperand(val, req, name, desc)
 
 	os.ops = append(os.ops, o)
