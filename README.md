@@ -56,8 +56,8 @@ func main() {
 
 ### Operands
 
-Operands are the non-flag, non-subcommand args in a CLI command that are at the end of the arg set.
-Operands are normally treated as the important values used by the behavior being executed with the
+Operands are the non-flag, non-command args in a CLI command that are at the end of the arg set.
+Operands are normally treated as the important values used in the behavior being executed by a
 particular CLI command.
 
 ### Supported Operand Value Types
@@ -75,8 +75,8 @@ type TextMarshalUnmarshaler
 
 TextMarshalUnmarshaler describes types which satisfy both the encoding.TextMarshaler and
 encoding.TextUnmarshaler interfaces, and is offered so that callers can easily use standard library
-compatible types. OperandFunc is any compatible function used as an action to take when the related
-operand is called. Compatible functions will be automatically converted to OperandFunc.
+compatible types. OperandFunc describes functions that are able to be called when the related
+operand is parsed. Compatible functions will be automatically converted to OperandFunc.
 
 ```go
 func main() {

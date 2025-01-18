@@ -1,10 +1,9 @@
 // Package operandset is similar to the standard library flag package. Instead
 // of flags, operands are the focus.
 //
-// Operands are the non-flag, non-subcommand
-// args in a CLI command that are at the end of the arg set. Operands are
-// normally treated as the important values used by the behavior being executed
-// with the particular CLI command.
+// Operands are the non-flag, non-command args in a CLI command that are at the
+// end of the arg set. Operands are normally treated as the important values
+// used in the behavior being executed by a particular CLI command.
 package operandset
 
 import (
