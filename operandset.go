@@ -1,5 +1,5 @@
-// Package operandset is similar to the standard library flag package. Instead
-// of flags, operands are the focus.
+// Package operandset is similar to the [github.com/daved/flagset] package.
+// Instead of flags, operands are the focus.
 //
 // Operands are the non-flag, non-command args in a CLI command that are at the
 // end of the arg set. Operands are normally treated as the important values
@@ -47,7 +47,8 @@ func (os *OperandSet) Operands() []*Operand {
 
 // Operand adds an operand option to the OperandSet.
 // Valid values are:
-//   - builtin: *string, *bool, *int, *int64, *uint, *uint64, *float64
+//   - builtin: *string, *bool, *int, *int8, *int16, *int32, *int64, *uint,
+//     *uint8, *uint16, *uint32, *uint64, *float32, *float64
 //   - stdlib: *[time.Duration], [flag.Value]
 //   - vtype: [vtype.TextMarshalUnmarshaler], [vtype.OperandFunc]
 func (os *OperandSet) Operand(val any, req bool, name, desc string) *Operand {
@@ -115,6 +116,27 @@ func parse(ops []*Operand, args []string) error {
 			}
 			*v = n
 
+		case *int8:
+			n, err := strconv.ParseInt(raw, 10, 8)
+			if err != nil {
+				return newError(er.NewConvertRawError(err))
+			}
+			*v = int8(n)
+
+		case *int16:
+			n, err := strconv.ParseInt(raw, 10, 16)
+			if err != nil {
+				return newError(er.NewConvertRawError(err))
+			}
+			*v = int16(n)
+
+		case *int32:
+			n, err := strconv.ParseInt(raw, 10, 32)
+			if err != nil {
+				return newError(er.NewConvertRawError(err))
+			}
+			*v = int32(n)
+
 		case *uint:
 			n, err := strconv.ParseUint(raw, 10, 0)
 			if err != nil {
@@ -129,12 +151,40 @@ func parse(ops []*Operand, args []string) error {
 			}
 			*v = n
 
+		case *uint8:
+			n, err := strconv.ParseUint(raw, 10, 8)
+			if err != nil {
+				return newError(er.NewConvertRawError(err))
+			}
+			*v = uint8(n)
+
+		case *uint16:
+			n, err := strconv.ParseUint(raw, 10, 16)
+			if err != nil {
+				return newError(er.NewConvertRawError(err))
+			}
+			*v = uint16(n)
+
+		case *uint32:
+			n, err := strconv.ParseUint(raw, 10, 32)
+			if err != nil {
+				return newError(er.NewConvertRawError(err))
+			}
+			*v = uint32(n)
+
 		case *float64:
 			f, err := strconv.ParseFloat(raw, 64)
 			if err != nil {
 				return newError(er.NewConvertRawError(err))
 			}
 			*v = f
+
+		case *float32:
+			f, err := strconv.ParseFloat(raw, 32)
+			if err != nil {
+				return newError(er.NewConvertRawError(err))
+			}
+			*v = float32(f)
 
 		case *time.Duration:
 			d, err := time.ParseDuration(raw)
