@@ -87,15 +87,15 @@ func (e *OperandHydrateError) Is(err error) bool {
 }
 
 type OperandMissingError struct {
-	Operand string
+	Name string
 }
 
-func NewOperandMissingError(operand string) *OperandMissingError {
-	return &OperandMissingError{operand}
+func NewOperandMissingError(name string) *OperandMissingError {
+	return &OperandMissingError{name}
 }
 
 func (e *OperandMissingError) Error() string {
-	return fmt.Sprintf("missing an expected operand: %s", e.Operand)
+	return fmt.Sprintf("missing an expected operand: %s", e.Name)
 }
 
 func (e *OperandMissingError) Is(err error) bool {
