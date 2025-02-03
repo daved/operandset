@@ -65,37 +65,37 @@ func (e *ResolveError) Is(err error) bool {
 	return reflect.TypeOf(e) == reflect.TypeOf(err)
 }
 
-type HydrateError struct {
-	Operand string
-	child   error
+type OperandHydrateError struct {
+	Name  string
+	child error
 }
 
-func NewHydrateError(operand string, child error) *HydrateError {
-	return &HydrateError{operand, child}
+func NewOperandHydrateError(name string, child error) *OperandHydrateError {
+	return &OperandHydrateError{name, child}
 }
 
-func (e *HydrateError) Error() string {
-	return fmt.Sprintf("hydrate (%s): %v", e.Operand, e.child)
+func (e *OperandHydrateError) Error() string {
+	return fmt.Sprintf("hydrate (%s): %v", e.Name, e.child)
 }
 
-func (e *HydrateError) Unwrap() error {
+func (e *OperandHydrateError) Unwrap() error {
 	return e.child
 }
 
-func (e *HydrateError) Is(err error) bool {
+func (e *OperandHydrateError) Is(err error) bool {
 	return reflect.TypeOf(e) == reflect.TypeOf(err)
 }
 
 type OperandMissingError struct {
-	name string
+	Operand string
 }
 
-func NewOperandMissingError(name string) *OperandMissingError {
-	return &OperandMissingError{name}
+func NewOperandMissingError(operand string) *OperandMissingError {
+	return &OperandMissingError{operand}
 }
 
 func (e *OperandMissingError) Error() string {
-	return fmt.Sprintf("missing an expected operand: %s", e.name)
+	return fmt.Sprintf("missing an expected operand: %s", e.Operand)
 }
 
 func (e *OperandMissingError) Is(err error) bool {

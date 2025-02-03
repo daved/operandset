@@ -30,7 +30,7 @@ func resolve(ops []*Operand, args []string) error {
 }
 
 func hydrate(op *Operand, raw string) error {
-	wrap := er.NewHydrateError
+	wrap := er.NewOperandHydrateError
 
 	switch v := op.val.(type) {
 	case *string:

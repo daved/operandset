@@ -9,5 +9,5 @@ import (
 // directly in this package.
 type (
 	OperandMissingError = oserrs.OperandMissingError
-	HydrateError        = oserrs.HydrateError
+	OperandHydrateError = oserrs.OperandHydrateError
 )
