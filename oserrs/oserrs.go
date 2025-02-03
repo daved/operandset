@@ -45,6 +45,47 @@ func (e *ParseError) Is(err error) bool {
 	return reflect.TypeOf(e) == reflect.TypeOf(err)
 }
 
+type ResolveError struct {
+	child error
+}
+
+func NewResolveError(child error) *ResolveError {
+	return &ResolveError{child}
+}
+
+func (e *ResolveError) Error() string {
+	return fmt.Sprintf("resolve: %v", e.child)
+}
+
+func (e *ResolveError) Unwrap() error {
+	return e.child
+}
+
+func (e *ResolveError) Is(err error) bool {
+	return reflect.TypeOf(e) == reflect.TypeOf(err)
+}
+
+type HydrateError struct {
+	Operand string
+	child   error
+}
+
+func NewHydrateError(operand string, child error) *HydrateError {
+	return &HydrateError{operand, child}
+}
+
+func (e *HydrateError) Error() string {
+	return fmt.Sprintf("hydrate (%s): %v", e.Operand, e.child)
+}
+
+func (e *HydrateError) Unwrap() error {
+	return e.child
+}
+
+func (e *HydrateError) Is(err error) bool {
+	return reflect.TypeOf(e) == reflect.TypeOf(err)
+}
+
 type OperandMissingError struct {
 	name string
 }

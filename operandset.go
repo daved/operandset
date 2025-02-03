@@ -7,10 +7,6 @@
 package operandset
 
 import (
-	"flag"
-	"strconv"
-	"time"
-
 	er "github.com/daved/operandset/oserrs"
 	"github.com/daved/operandset/vtype"
 )
@@ -70,144 +66,8 @@ func (os *OperandSet) Operand(val any, req bool, name, desc string) *Operand {
 func (os *OperandSet) Parse(args []string) error {
 	os.raws = args
 
-	if err := parse(os.ops, args); err != nil {
-		return er.NewError(err)
-	}
-
-	return nil
-}
-
-func parse(ops []*Operand, args []string) error {
-	newError := er.NewParseError
-
-	for i, op := range ops {
-		if len(args) <= i {
-			if !op.req {
-				continue
-			}
-
-			return newError(er.NewOperandMissingError(op.name))
-		}
-
-		raw := args[i]
-
-		switch v := op.val.(type) {
-		case *string:
-			*v = raw
-
-		case *bool:
-			b, err := strconv.ParseBool(raw)
-			if err != nil {
-				return newError(er.NewConvertRawError(err))
-			}
-			*v = b
-
-		case *int:
-			n, err := strconv.Atoi(raw)
-			if err != nil {
-				return newError(er.NewConvertRawError(err))
-			}
-			*v = n
-
-		case *int64:
-			n, err := strconv.ParseInt(raw, 10, 0)
-			if err != nil {
-				return newError(er.NewConvertRawError(err))
-			}
-			*v = n
-
-		case *int8:
-			n, err := strconv.ParseInt(raw, 10, 8)
-			if err != nil {
-				return newError(er.NewConvertRawError(err))
-			}
-			*v = int8(n)
-
-		case *int16:
-			n, err := strconv.ParseInt(raw, 10, 16)
-			if err != nil {
-				return newError(er.NewConvertRawError(err))
-			}
-			*v = int16(n)
-
-		case *int32:
-			n, err := strconv.ParseInt(raw, 10, 32)
-			if err != nil {
-				return newError(er.NewConvertRawError(err))
-			}
-			*v = int32(n)
-
-		case *uint:
-			n, err := strconv.ParseUint(raw, 10, 0)
-			if err != nil {
-				return newError(er.NewConvertRawError(err))
-			}
-			*v = uint(n)
-
-		case *uint64:
-			n, err := strconv.ParseUint(raw, 10, 0)
-			if err != nil {
-				return newError(er.NewConvertRawError(err))
-			}
-			*v = n
-
-		case *uint8:
-			n, err := strconv.ParseUint(raw, 10, 8)
-			if err != nil {
-				return newError(er.NewConvertRawError(err))
-			}
-			*v = uint8(n)
-
-		case *uint16:
-			n, err := strconv.ParseUint(raw, 10, 16)
-			if err != nil {
-				return newError(er.NewConvertRawError(err))
-			}
-			*v = uint16(n)
-
-		case *uint32:
-			n, err := strconv.ParseUint(raw, 10, 32)
-			if err != nil {
-				return newError(er.NewConvertRawError(err))
-			}
-			*v = uint32(n)
-
-		case *float64:
-			f, err := strconv.ParseFloat(raw, 64)
-			if err != nil {
-				return newError(er.NewConvertRawError(err))
-			}
-			*v = f
-
-		case *float32:
-			f, err := strconv.ParseFloat(raw, 32)
-			if err != nil {
-				return newError(er.NewConvertRawError(err))
-			}
-			*v = float32(f)
-
-		case *time.Duration:
-			d, err := time.ParseDuration(raw)
-			if err != nil {
-				return newError(er.NewConvertRawError(err))
-			}
-			*v = d
-
-		case vtype.TextMarshalUnmarshaler:
-			if err := v.UnmarshalText([]byte(raw)); err != nil {
-				return newError(er.NewConvertRawError(err))
-			}
-
-		case flag.Value:
-			if err := v.Set(raw); err != nil {
-				return newError(er.NewConvertRawError(err))
-			}
-
-		case vtype.OperandFunc:
-			if err := v(raw); err != nil {
-				return newError(er.NewConvertRawError(err))
-			}
-		}
+	if err := resolve(os.ops, args); err != nil {
+		return er.NewError(er.NewParseError(err))
 	}
 
 	return nil

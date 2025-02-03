@@ -8,8 +8,6 @@ import (
 // documentation. If an error has interesting behavior, it should be defined
 // directly in this package.
 type (
-	Error               = oserrs.Error
-	ParseError          = oserrs.ParseError
 	OperandMissingError = oserrs.OperandMissingError
-	ConvertRawError     = oserrs.ConvertRawError
+	HydrateError        = oserrs.HydrateError
 )
