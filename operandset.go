@@ -8,7 +8,7 @@ package operandset
 
 import (
 	er "github.com/daved/operandset/oserrs"
-	"github.com/daved/operandset/vtype"
+	"github.com/daved/vtype"
 )
 
 // OperandSet contains operand options and related information used for usage
@@ -48,12 +48,9 @@ func (os *OperandSet) Operands() []*Operand {
 //   - stdlib: *[time.Duration], [flag.Value]
 //   - vtype: [vtype.TextMarshalUnmarshaler], [vtype.OperandFunc]
 func (os *OperandSet) Operand(val any, req bool, name, desc string) *Operand {
-	if v, ok := val.(func(string) error); ok {
-		val = vtype.OperandFunc(v)
-	}
+	val = vtype.ConvertCompatible(val)
 
 	o := newOperand(val, req, name, desc)
-
 	os.ops = append(os.ops, o)
 
 	return o
