@@ -14,11 +14,11 @@ func resolve(ops []*Operand, args []string) error {
 				continue
 			}
 
-			return wrap(er.NewOperandMissingError(op.name))
+			return wrap(er.ErrOperandMissing, op.name)
 		}
 
 		if err := vtype.Hydrate(op.val, args[i]); err != nil {
-			return wrap(err)
+			return wrap(err, op.name)
 		}
 	}
 

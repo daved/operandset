@@ -1,6 +1,7 @@
 package oserrs
 
 import (
+	"errors"
 	"fmt"
 	"reflect"
 )
@@ -25,6 +26,8 @@ func (e *Error) Is(err error) bool {
 	return reflect.TypeOf(e) == reflect.TypeOf(err)
 }
 
+var ErrOperandMissing = errors.New("operand missing")
+
 type ParseError struct {
 	child error
 }
@@ -46,15 +49,16 @@ func (e *ParseError) Is(err error) bool {
 }
 
 type ResolveError struct {
-	child error
+	child       error
+	OperandName string
 }
 
-func NewResolveError(child error) *ResolveError {
-	return &ResolveError{child}
+func NewResolveError(child error, operandName string) *ResolveError {
+	return &ResolveError{child, operandName}
 }
 
 func (e *ResolveError) Error() string {
-	return fmt.Sprintf("resolve: %v", e.child)
+	return fmt.Sprintf("resolve (operand name: %s): %v", e.OperandName, e.child)
 }
 
 func (e *ResolveError) Unwrap() error {
@@ -62,42 +66,5 @@ func (e *ResolveError) Unwrap() error {
 }
 
 func (e *ResolveError) Is(err error) bool {
-	return reflect.TypeOf(e) == reflect.TypeOf(err)
-}
-
-type OperandHydrateError struct {
-	Name  string
-	child error
-}
-
-func NewOperandHydrateError(name string, child error) *OperandHydrateError {
-	return &OperandHydrateError{name, child}
-}
-
-func (e *OperandHydrateError) Error() string {
-	return fmt.Sprintf("hydrate (%s): %v", e.Name, e.child)
-}
-
-func (e *OperandHydrateError) Unwrap() error {
-	return e.child
-}
-
-func (e *OperandHydrateError) Is(err error) bool {
-	return reflect.TypeOf(e) == reflect.TypeOf(err)
-}
-
-type OperandMissingError struct {
-	Name string
-}
-
-func NewOperandMissingError(name string) *OperandMissingError {
-	return &OperandMissingError{name}
-}
-
-func (e *OperandMissingError) Error() string {
-	return fmt.Sprintf("missing an expected operand: %s", e.Name)
-}
-
-func (e *OperandMissingError) Is(err error) bool {
 	return reflect.TypeOf(e) == reflect.TypeOf(err)
 }
