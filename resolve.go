@@ -14,7 +14,7 @@ func resolve(ops []*Operand, args []string) error {
 				continue
 			}
 
-			return wrap(er.ErrOperandMissing, op.name)
+			return wrap(er.ErrOperandRequired, op.name)
 		}
 
 		if err := vtype.Hydrate(op.val, args[i]); err != nil {

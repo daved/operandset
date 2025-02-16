@@ -15,6 +15,6 @@ type (
 )
 
 var (
-	ErrOperandMissing  = oserrs.ErrOperandMissing
+	ErrOperandMissing  = oserrs.ErrOperandRequired
 	ErrTypeUnsupported = vtype.ErrTypeUnsupported
 )

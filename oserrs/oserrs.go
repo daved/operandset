@@ -26,7 +26,7 @@ func (e *Error) Is(err error) bool {
 	return reflect.TypeOf(e) == reflect.TypeOf(err)
 }
 
-var ErrOperandMissing = errors.New("operand missing")
+var ErrOperandRequired = errors.New("operand required")
 
 type ParseError struct {
 	child error
