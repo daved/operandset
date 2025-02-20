@@ -1,9 +1,11 @@
-// Package operandset is similar to the [github.com/daved/flagset] package.
-// Instead of flags, operands are the focus.
+// Package operandset provides simple, POSIX-friendly operand parsing. It is
+// similar to and intended to be used with the [github.com/daved/flagset]
+// package.
 //
-// Operands are the non-flag, non-command args in a CLI command that are at the
-// end of the arg set. Operands are normally treated as the important values
-// used in the behavior being executed by a particular CLI command.
+// CLI command arguments that are not subcommands or flag-related (no hyphen
+// prefix, not a flag value) should be provided to be processed as operands.
+// Typically, operands are the most interesting values used in the behavior
+// being executed by a command.
 package operandset
 
 import (
@@ -11,27 +13,32 @@ import (
 	"github.com/daved/vtype"
 )
 
-// OperandSet contains operand options and related information used for usage
-// output. The exported fields are for easy post-construction configuraiton.
+// OperandSet contains operand options and usage-related values. Exported fields
+// are used for easy post-construction configuraiton.
 type OperandSet struct {
-	name    string
-	ops     []*Operand
-	raws    []string
-	tmplCfg *TmplConfig
-	Meta    map[string]any
+	// Templating
+	Tmpl *Tmpl // set to NewUsageTmpl by default
+	Meta map[string]any
+
+	name string
+	ops  []*Operand
+	raws []string
 }
 
-// New constructs an OperandSet. In this package, it is conventional to name the
-// operandset after the command that the options are being associated with.
+// New constructs an OperandSet. Package convention is to name the operandset
+// after the command that the operands are being associated with.
 func New(name string) *OperandSet {
-	return &OperandSet{
-		name:    name,
-		tmplCfg: NewDefaultTmplConfig(),
-		Meta:    map[string]any{},
+	os := &OperandSet{
+		name: name,
+		Meta: map[string]any{},
 	}
+
+	os.Tmpl = NewUsageTmpl(os)
+
+	return os
 }
 
-// Name returns the name set during construction.
+// Name returns the name of the OperandSet  set during construction.
 func (os *OperandSet) Name() string {
 	return os.name
 }
@@ -41,12 +48,9 @@ func (os *OperandSet) Operands() []*Operand {
 	return os.ops
 }
 
-// Operand adds an operand option to the OperandSet.
-// Valid values are:
-//   - builtin: *string, *bool, *int, *int8, *int16, *int32, *int64, *uint,
-//     *uint8, *uint16, *uint32, *uint64, *float32, *float64
-//   - stdlib: *[time.Duration], [flag.Value]
-//   - vtype: [vtype.TextMarshalUnmarshaler], [vtype.OperandFunc]
+// Operand adds an operand option to the OperandSet. See [vtype.Hydrate] for
+// details about which value types are supported. Functions compatible with
+// [vtype] typed functions will be auto-converted.
 func (os *OperandSet) Operand(val any, req bool, name, desc string) *Operand {
 	val = vtype.ConvertCompatible(val)
 
@@ -56,10 +60,9 @@ func (os *OperandSet) Operand(val any, req bool, name, desc string) *Operand {
 	return o
 }
 
-// Parse parses operand definitions from the argument list, which must not
-// include the initial command name. Parse must be called after all operands in
-// the OperandSet are defined and before operand values are accessed by the
-// program.
+// Parse processes operand values from the argument list, which must not include
+// the initial command name. Parse must be called after all operands in the
+// OperandSet are defined and before operand value access.
 func (os *OperandSet) Parse(args []string) error {
 	os.raws = args
 
@@ -70,21 +73,14 @@ func (os *OperandSet) Parse(args []string) error {
 	return nil
 }
 
-// Parsed returns the args provided when Parse was called. The returned value
-// can be helpful for debugging.
+// Parsed returns the args provided to Parse.
 func (os *OperandSet) Parsed() []string {
 	return os.raws
 }
 
-// SetUsageTemplating is used to override the base template text, and provide a
-// custom FuncMap. If a nil FuncMap is provided, no change will be made to the
-// existing value.
-func (os *OperandSet) SetUsageTemplating(tmplCfg *TmplConfig) {
-	os.tmplCfg = tmplCfg
-}
-
-// Usage returns the executed usage template. Each Operand type's Meta field can
-// be leveraged to convey detailed info/behavior in a custom template.
+// Usage returns usage text. The default template construction function
+// ([NewUsageTmpl]) can be used as a reference for custom templates which should
+// be used to set the "Tmpl" field on OperandSet.
 func (os *OperandSet) Usage() string {
-	return executeTmpl(os.tmplCfg, &TmplData{OperandSet: os})
+	return os.Tmpl.String()
 }
