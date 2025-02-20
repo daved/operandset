@@ -23,6 +23,7 @@ type OperandSet struct {
 	name string
 	ops  []*Operand
 	raws []string
+	unre []string
 }
 
 // New constructs an OperandSet. Package convention is to name the operandset
@@ -62,13 +63,17 @@ func (os *OperandSet) Operand(val any, req bool, name, desc string) *Operand {
 
 // Parse processes operand values from the argument list, which must not include
 // the initial command name. Parse must be called after all operands in the
-// OperandSet are defined and before operand value access.
+// OperandSet are defined and before operand value access (including use of
+// [OperandSet.Unresolved]).
 func (os *OperandSet) Parse(args []string) error {
 	os.raws = args
 
-	if err := resolve(os.ops, args); err != nil {
+	unresolved, err := resolve(os.ops, args)
+	if err != nil {
 		return er.NewError(er.NewParseError(err))
 	}
+
+	os.unre = unresolved
 
 	return nil
 }
@@ -76,6 +81,11 @@ func (os *OperandSet) Parse(args []string) error {
 // Parsed returns the args provided to Parse.
 func (os *OperandSet) Parsed() []string {
 	return os.raws
+}
+
+// Unresolved returns the args provided to Parse that did not resolve.
+func (os *OperandSet) Unresolved() []string {
+	return os.unre
 }
 
 // Usage returns usage text. The default template construction function

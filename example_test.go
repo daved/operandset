@@ -26,7 +26,6 @@ func Example() {
 	fmt.Printf("Num: %d, Info: %s\n", num, info)
 	fmt.Println()
 	fmt.Println(os.Usage())
-
 	// Output:
 	// Num: 42, Info: non-default
 	//
@@ -37,4 +36,22 @@ func Example() {
 	//
 	//     information
 	//         Info to use.
+}
+
+func ExampleOperandSet_Unresolved() {
+	var num int
+
+	os := operandset.New("app")
+	os.Operand(&num, true, "number", "Number for printing.")
+
+	args := []string{"42", "unresolved-A", "unresolved-B"}
+
+	if err := os.Parse(args); err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	fmt.Printf("Num: %d, Unresolved: %v\n", num, os.Unresolved())
+	// Output:
+	// Num: 42, Unresolved: [unresolved-A unresolved-B]
 }
