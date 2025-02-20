@@ -1,6 +1,6 @@
 package operandset
 
-// Operand manages operand option data. The exported fields are for easy
+// Operand manages operand option data. Exported fields are for easy
 // post-construction configuration.
 type Operand struct {
 	val  any
