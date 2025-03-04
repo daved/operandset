@@ -2,7 +2,7 @@ package operandset
 
 import (
 	"github.com/daved/operandset/oserrs"
-	"github.com/daved/vtype"
+	"github.com/daved/vtypes"
 )
 
 // Error types forward basic error types from sub-packages for access and
@@ -15,6 +15,7 @@ type (
 )
 
 var (
-	ErrOperandRequired = oserrs.ErrOperandRequired
-	ErrTypeUnsupported = vtype.ErrTypeUnsupported
+	ErrOperandRequired  = oserrs.ErrOperandRequired
+	ErrTypeUnsupported  = vtypes.ErrTypeUnsupported
+	ErrValueUnsupported = vtypes.ErrValueUnsupported
 )

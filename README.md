@@ -65,9 +65,9 @@ particular CLI command.
 - builtin: *string, *bool, *int, *int8, *int16, *int32, *int64, *uint, *uint8, *uint16, *uint32,
 *uint64, *float32, *float64
 - stdlib: *time.Duration, flag.Value
-- vtype: vtype.TextMarshalUnmarshaler, vtype.OperandFunc
+- vtypes: vtypes.TextMarshalUnmarshaler, vtypes.OperandFunc
 
-#### `vtype` Types
+#### `vtypes`
 
 ```go
 type OperandFunc

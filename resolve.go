@@ -2,7 +2,7 @@ package operandset
 
 import (
 	er "github.com/daved/operandset/oserrs"
-	"github.com/daved/vtype"
+	"github.com/daved/vtypes"
 )
 
 func resolve(ops []*Operand, args []string) ([]string, error) {
@@ -17,7 +17,7 @@ func resolve(ops []*Operand, args []string) ([]string, error) {
 			return nil, wrap(er.ErrOperandRequired, op.name)
 		}
 
-		if err := vtype.Hydrate(op.val, args[i]); err != nil {
+		if err := vtypes.Hydrate(op.val, args[i]); err != nil {
 			return args[i:], wrap(err, op.name)
 		}
 	}

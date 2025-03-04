@@ -10,7 +10,7 @@ package operandset
 
 import (
 	er "github.com/daved/operandset/oserrs"
-	"github.com/daved/vtype"
+	"github.com/daved/vtypes"
 )
 
 // OperandSet contains operand options and usage-related values. Exported fields
@@ -49,11 +49,11 @@ func (os *OperandSet) Operands() []*Operand {
 	return os.ops
 }
 
-// Operand adds an operand option to the OperandSet. See [vtype.Hydrate] for
+// Operand adds an operand option to the OperandSet. See [vtypes.Hydrate] for
 // details about which value types are supported. Functions compatible with
-// [vtype] typed functions will be auto-converted.
+// [vtypes] typed functions will be auto-converted.
 func (os *OperandSet) Operand(val any, req bool, name, desc string) *Operand {
-	val = vtype.ConvertCompatible(val)
+	val = vtypes.ConvertCompatible(val)
 
 	o := newOperand(val, req, name, desc)
 	os.ops = append(os.ops, o)
